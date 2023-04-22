@@ -45,6 +45,7 @@ class FlappyBirdEnvSimple(gym.Env):
         * Horizontal distance to the next pipe;
         * Difference between the player's y position and the next hole's y
           position.
+        * The vertical velocity of the player
 
     The reward received by the agent in each step is equal to the score obtained
     by the agent in that step. A score point is obtained every time the bird
@@ -75,7 +76,7 @@ class FlappyBirdEnvSimple(gym.Env):
                  background: Optional[str] = "day") -> None:
         self.action_space = gym.spaces.Discrete(2)
         self.observation_space = gym.spaces.Box(-np.inf, np.inf,
-                                                shape=(2,),
+                                                shape=(3,),
                                                 dtype=np.float32)
         self._screen_size = screen_size
         self._normalize_obs = normalize_obs
@@ -113,6 +114,7 @@ class FlappyBirdEnvSimple(gym.Env):
         return np.array([
             h_dist,
             v_dist,
+            self._game.player_vel_y
         ])
 
     def step(self,
@@ -129,7 +131,8 @@ class FlappyBirdEnvSimple(gym.Env):
 
                 * an observation (horizontal distance to the next pipe;
                   difference between the player's y position and the next hole's
-                  y position);
+                  y position;
+                  player's vertical velocity);
                 * a reward (always 1);
                 * a status report (`True` if the game is over and `False`
                   otherwise);
